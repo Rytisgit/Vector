@@ -137,11 +137,12 @@ Vector<T> &Vector<T>::operator=(const Vector<T> &v) {
 
 template<class T>
 void Vector<T>::push_back(const T &value) {
+    if(max ==0){max=1; sz=1;T* buffer = new T[2]; buffer[0]==value;}
     if (sz >= max) {
         reserve(max * 2);
     }
     buffer[sz++] = value;
-
+    std::cout<<"im ok";
 }
 
 template<class T>
@@ -152,15 +153,20 @@ void Vector<T>::pop_back() {
 
 template<class T>
 void Vector<T>::reserve(size_t request) {
+
     if(request>max) {
         T *newBuffer = new T[request];
         for (size_t i = 0; i < sz; i++) {
             newBuffer[i] = buffer[i];
         };
         max = request;
-        sz < 2 ? delete buffer : delete[] buffer;
-        buffer = std::move(newBuffer);
-        //std::cout<<"reserve is "+buffer[0];
+       // sz < 2 ? delete buffer : delete[] buffer;
+        delete [] buffer;
+      //  buffer = nullptr;
+        buffer = newBuffer;
+//        delete [] newBuffer;
+//        newBuffer = nullptr;
+        std::cout<<"reserve is "+buffer[0];
 
 
     }
@@ -220,7 +226,7 @@ void Vector<T>::clear() {
 
     if(sz<2)delete buffer;
     else delete[] buffer;
-    std::cout<<sz;
+  //  std::cout<<sz;
     max = 0;
     sz = 0;
     buffer = nullptr;
@@ -298,10 +304,17 @@ void Vector<T>::assign(std::initializer_list<T> list) {
 
 template<class T>
 void Vector<T>::push_back(T &&value) {
-    if (sz >= max) {
-        reserve(max*2);
+    if(max ==0){max=2; sz=0;T* buffer = new T[2]; }
+    else {if (sz+1 >= max) {
+        max =max*2;
+        T* newBuffer = new T[max];
+        for (size_t i = 0; i <sz; i++) {
+            newBuffer[i] = buffer[i];}
+        delete[] buffer;
+        buffer = newBuffer;
     }
-    buffer[sz++] = value;
+        buffer [sz++] = value;
+}
 }
 
 template<class T>
@@ -313,7 +326,8 @@ void Vector<T>::shrink_to_fit() {
         //clear();
         max = tempsz;
         sz = tempsz;
-        buffer = new T[sz];
+        sz < 2 ? delete buffer : delete[] buffer;
+        buffer = nullptr;
         buffer = std::move(temp);
     }
 }
@@ -356,8 +370,8 @@ typename Vector<T>::iterator Vector<T>::insert(Vector::iterator it, const T &val
         tempsz = sz;
         tempmax = max;
     }
-    //clear();
-    //buffer = new T[tempsz];
+    sz < 2 ? delete buffer : delete[] buffer;
+    buffer = nullptr;
     buffer = std::move(temp);
     return begin()+i;
 }
@@ -400,8 +414,8 @@ typename Vector<T>::iterator Vector<T>::insert(Vector::const_iterator it, T &&va
         tempsz = sz;
         tempmax = max;
     }
-    //clear();
-    //buffer = new T[tempsz];
+    sz < 2 ? delete buffer : delete[] buffer;
+    buffer = nullptr;
     buffer = std::move(temp);
     return begin()+i;
 }
@@ -449,8 +463,8 @@ typename Vector<T>::iterator Vector<T>::insert(Vector::const_iterator it, iterat
         tempsz = sz;
         tempmax = max;
     }
-    //clear();
-    //buffer = new T[tempsz];
+    sz < 2 ? delete buffer : delete[] buffer;
+    buffer = nullptr;
     buffer = std::move(temp);
     return begin()+i;
 }
@@ -498,8 +512,8 @@ typename Vector<T>::iterator Vector<T>::insert(Vector::const_iterator it, std::i
         tempsz = sz;
         tempmax = max;
     }
-    //clear();
-    //buffer = new T[tempsz];
+    sz < 2 ? delete buffer : delete[] buffer;
+    buffer = nullptr;
     buffer = std::move(temp);
     return begin()+i;
 }
@@ -544,8 +558,8 @@ typename Vector<T>::iterator Vector<T>::emplace(Vector::const_iterator it, Args 
         tempsz = sz;
         tempmax = max;
     }
-    //clear();
-    //buffer = new T[tempsz];
+    sz < 2 ? delete buffer : delete[] buffer;
+    buffer = nullptr;
     buffer = std::move(temp);
     return begin()+i;
 }
