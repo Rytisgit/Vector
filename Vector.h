@@ -75,7 +75,11 @@ public:
     const_reverse_iterator rend() const { return buffer-1; };
     const_reverse_iterator crend() const noexcept { return buffer-1; };
 
-    iterator insert(iterator pos, const T& value);
+    iterator insert(iterator it, const T& value);
+    iterator insert(const_iterator it, T&& value);
+    iterator insert( const_iterator it, size_t length, const T& value );
+    iterator insert(const_iterator it, iterator first, iterator last);
+    iterator insert( const_iterator it, std::initializer_list<T> list );
 
     template <class Args>
     iterator emplace(const_iterator pos, Args&& args);
@@ -116,6 +120,7 @@ template<class T>
 Vector<T>::Vector(size_t size, const T &initial) : sz(size), max(size), buffer(new T[max]) {
     for (size_t i = 0; i < size; i++)
        buffer[i]=initial;
+    std::cout<<"buffer[0] is"+buffer[0];
 }
 
 template<class T>
@@ -155,8 +160,9 @@ void Vector<T>::reserve(size_t request) {
         max = request;
         sz < 2 ? delete buffer : delete[] buffer;
         buffer = std::move(newBuffer);
-        delete[] newBuffer;
-        newBuffer = nullptr;
+        //std::cout<<"reserve is "+buffer[0];
+
+
     }
 }
 
@@ -211,7 +217,10 @@ Vector<T>::~Vector() {
 
 template<class T>
 void Vector<T>::clear() {
-    sz<2 ? delete buffer : delete[] buffer;
+
+    if(sz<2)delete buffer;
+    else delete[] buffer;
+    std::cout<<sz;
     max = 0;
     sz = 0;
     buffer = nullptr;
@@ -298,65 +307,342 @@ void Vector<T>::push_back(T &&value) {
 template<class T>
 void Vector<T>::shrink_to_fit() {
     if(max>sz){
+
         T* temp = std::move(buffer);
-        size_t tempsz = sz;
-        clear();
+        size_t tempsz = sz;std::cout<<std::endl<<temp[5]<<std::endl;
+        //clear();
         max = tempsz;
         sz = tempsz;
         buffer = new T[sz];
         buffer = std::move(temp);
-        delete[] temp;
-        temp = nullptr;
     }
 }
 
-//template<class T>
-//Vector::iterator Vector<T>::insert(Vector::iterator pos, const T &value) {
-//    T *temp;
-//    sz = sz + 1;
-//    size_t i = 0;
-//    auto iterator=begin();
-//    for (; iterator == end()|| iterator== pos; iterator++) {
-//        i++;
-//    }
-//    if(iterator == end()) {throw std::out_of_range("Out of range"); }
-//    if (sz >= max) {
-//        temp = new T[sz];
-//        for (auto j = 0;  j<i ; ++j) {
-//            temp[j] = buffer[j];
-//        }
-//        temp[i] = value;
-//        for (auto j = i+1;  j<sz ; ++j) {
-//            temp[j] = buffer[j];
-//        }
-//        auto tempsz = sz;
-//        clear();
-//        buffer = new T[sz];
-//        buffer = std::move(temp);
-//        delete[] temp;
-//        temp = nullptr;
-//    }
-//    else{
-//        temp = new T[max];
-//        for (auto j = 0;  j<i ; ++j) {
-//            temp[j] = buffer[j];
-//        }
-//        temp[i] = value;
-//        for (auto j = i+1;  j<sz ; ++j) {
-//            temp[j] = buffer[j];
-//        }
-//        auto tempsz = sz;
-//        auto tempmax = max;
-//        clear();
-//        buffer = new T[sz];
-//        buffer = std::move(temp);
-//        delete[] temp;
-//        temp = nullptr;
-//    }
-//    for (auto iterator = begin(); iterator != pos; ++iterator) {
-//
-//    }
-//    return nullptr;
-//}
+template<class T>
+typename Vector<T>::iterator Vector<T>::insert(Vector::iterator it, const T &value) {
+    T *temp;
+    size_t tempsz{};
+    size_t tempmax{};
+    sz = sz + 1;
+    size_t i = 0;
+    auto iterator=begin();
+
+    for (; iterator != end()&& iterator!= it; iterator++) {
+        i++;
+    }
+    if(iterator == end()) {throw std::out_of_range("Out of range"); }
+    if (sz >= max) {
+        temp = new T[sz];
+        for (auto j = 0;  j<i ; ++j) {
+            temp[j] = buffer[j];
+
+        }
+        temp[i] = value;
+        for (auto j = i+1;  j<sz ; ++j) {
+            temp[j] = buffer[j];
+        }
+        tempsz = sz;
+
+    }
+    else{
+        temp = new T[max];
+        for (auto j = 0;  j<i ; ++j) {
+            temp[j] = buffer[j];
+        }
+        temp[i] = value;
+        for (auto j = i+1;  j<sz ; ++j) {
+            temp[j] = buffer[j];
+        }
+        tempsz = sz;
+        tempmax = max;
+    }
+    //clear();
+    //buffer = new T[tempsz];
+    buffer = std::move(temp);
+    return begin()+i;
+}
+
+template<class T>
+typename Vector<T>::iterator Vector<T>::insert(Vector::const_iterator it, T &&value) {
+    T *temp;
+    size_t tempsz{};
+    size_t tempmax{};
+    sz = sz + 1;
+    size_t i = 0;
+    auto iterator=begin();
+
+    for (; iterator != end()&& iterator!= it; iterator++) {
+        i++;
+    }
+    if(iterator == end()) {throw std::out_of_range("Out of range"); }
+    if (sz >= max) {
+        temp = new T[sz];
+        for (auto j = 0;  j<i ; ++j) {
+            temp[j] = buffer[j];
+
+        }
+        temp[i] = value;
+        for (auto j = i+1;  j<sz ; ++j) {
+            temp[j] = buffer[j];
+        }
+        tempsz = sz;
+
+    }
+    else{
+        temp = new T[max];
+        for (auto j = 0;  j<i ; ++j) {
+            temp[j] = buffer[j];
+        }
+        temp[i] = value;
+        for (auto j = i+1;  j<sz ; ++j) {
+            temp[j] = buffer[j];
+        }
+        tempsz = sz;
+        tempmax = max;
+    }
+    //clear();
+    //buffer = new T[tempsz];
+    buffer = std::move(temp);
+    return begin()+i;
+}
+
+template<class T>
+typename Vector<T>::iterator Vector<T>::insert(Vector::const_iterator it, iterator first, iterator last) {
+    T *temp;
+    size_t tempsz{};
+    size_t tempmax{};
+    auto inputSize = last-first;
+    sz = sz + inputSize;
+    size_t i = 0;
+    auto iterator=begin();
+
+    for (; iterator != end()&& iterator!= it; iterator++) {
+        i++;
+    }
+    if(iterator == end()) {throw std::out_of_range("Out of range"); }
+    if (sz >= max) {
+        temp = new T[sz];
+        for (auto j = 0;  j<i ; ++j) {
+            temp[j] = buffer[j];
+
+        }
+        for (auto j= i; j < i+ inputSize; ++j) {
+            temp[j]=*(first+j);
+        }
+        for (auto j = i+1;  j<sz ; ++j) {
+            temp[j] = buffer[j];
+        }
+        tempsz = sz;
+
+    }
+    else{
+        temp = new T[max];
+        for (auto j = 0;  j<i ; ++j) {
+            temp[j] = buffer[j];
+        }
+        for (auto j= i; j < i+ inputSize; ++j) {
+            temp[j]=*(first+j);
+        }
+        for (auto j = i+1;  j<sz ; ++j) {
+            temp[j] = buffer[j];
+        }
+        tempsz = sz;
+        tempmax = max;
+    }
+    //clear();
+    //buffer = new T[tempsz];
+    buffer = std::move(temp);
+    return begin()+i;
+}
+
+template<class T>
+typename Vector<T>::iterator Vector<T>::insert(Vector::const_iterator it, std::initializer_list<T> list) {
+    T *temp;
+    size_t tempsz{};
+    size_t tempmax{};
+    auto inputSize = list.size;
+    sz = sz + inputSize;
+    size_t i = 0;
+    auto iterator=begin();
+
+    for (; iterator != end()&& iterator!= it; iterator++) {
+        i++;
+    }
+    if(iterator == end()) {throw std::out_of_range("Out of range"); }
+    if (sz >= max) {
+        temp = new T[sz];
+        for (auto j = 0;  j<i ; ++j) {
+            temp[j] = buffer[j];
+
+        }
+        for (auto j= i; j < i+ inputSize; ++j) {
+            temp[j]=list[j];
+        }
+        for (auto j = i+1;  j<sz ; ++j) {
+            temp[j] = buffer[j];
+        }
+        tempsz = sz;
+
+    }
+    else{
+        temp = new T[max];
+        for (auto j = 0;  j<i ; ++j) {
+            temp[j] = buffer[j];
+        }
+        for (auto j= i; j < i+ inputSize; ++j) {
+            temp[j]=list[j];
+        }
+        for (auto j = i+1;  j<sz ; ++j) {
+            temp[j] = buffer[j];
+        }
+        tempsz = sz;
+        tempmax = max;
+    }
+    //clear();
+    //buffer = new T[tempsz];
+    buffer = std::move(temp);
+    return begin()+i;
+}
+
+template<class T>
+template<class Args>
+typename Vector<T>::iterator Vector<T>::emplace(Vector::const_iterator it, Args &&args) {
+
+    T *temp;
+    size_t tempsz{};
+    size_t tempmax{};
+    sz = sz + 1;
+    size_t i = 0;
+    auto iterator=begin();
+
+    for (; iterator != end()&& iterator!= it; iterator++) {
+        i++;
+    }
+    if(iterator == end()) {throw std::out_of_range("Out of range"); }
+    if (sz >= max) {
+        temp = new T[sz];
+        for (auto j = 0;  j<i ; ++j) {
+            temp[j] = buffer[j];
+
+        }
+        temp[i] = args;
+        for (auto j = i+1;  j<sz ; ++j) {
+            temp[j] = buffer[j];
+        }
+        tempsz = sz;
+
+    }
+    else{
+        temp = new T[max];
+        for (auto j = 0;  j<i ; ++j) {
+            temp[j] = buffer[j];
+        }
+        temp[i] = args;
+        for (auto j = i+1;  j<sz ; ++j) {
+            temp[j] = buffer[j];
+        }
+        tempsz = sz;
+        tempmax = max;
+    }
+    //clear();
+    //buffer = new T[tempsz];
+    buffer = std::move(temp);
+    return begin()+i;
+}
+
+template<class T>
+void Vector<T>::swap(Vector &v) {
+    Vector<T> tmp {std::move(v)};
+    v.buffer=std::move (buffer);
+    v.max = max;
+    v.sz = sz;
+    buffer=std::move(tmp.buffer);
+    max = tmp.max;
+    sz=tmp.sz;
+}
+template<class T>
+template<class Args>
+void Vector<T>::emplace_back(Args &&args) {
+    if (sz >= max) {
+        reserve(max * 2);
+    }
+    buffer[sz++] = args;
+}
+
+template<class T>
+typename Vector<T>::iterator Vector<T>::insert(Vector::const_iterator it, size_t length, const T &value) {
+    T *temp;
+    size_t tempsz{};
+    size_t tempmax{};
+    auto inputSize = length;
+    sz = sz + inputSize;
+    size_t i = 0;
+    auto iterator=begin();
+
+    for (; iterator != end()&& iterator!= it; iterator++) {
+        i++;
+    }
+    if(iterator == end()) {throw std::out_of_range("Out of range"); }
+    if (sz >= max) {
+        temp = new T[sz];
+        for (auto j = 0;  j<i ; ++j) {
+            temp[j] = buffer[j];
+
+        }
+        for (auto j= i; j < i+ inputSize; ++j) {
+            temp[j]=value;
+        }
+        for (auto j = i+1;  j<sz ; ++j) {
+            temp[j] = buffer[j];
+        }
+        tempsz = sz;
+
+    }
+    else{
+        temp = new T[max];
+        for (auto j = 0;  j<i ; ++j) {
+            temp[j] = buffer[j];
+        }
+        for (auto j= i; j < i+ inputSize; ++j) {
+            temp[j]=value;
+        }
+        for (auto j = i+1;  j<sz ; ++j) {
+            temp[j] = buffer[j];
+        }
+        tempsz = sz;
+        tempmax = max;
+    }
+    clear();
+    //buffer = new T[tempsz];
+    buffer = std::move(temp);
+    sz=tempsz;
+    max=tempmax;
+    return begin()+i;
+}
+
+template<class T>
+Vector<T> &Vector<T>::operator=(std::initializer_list<T> list) {
+    sz<2 ? delete buffer : delete[] buffer;
+    buffer = list;
+    sz = static_cast<Vector::size_t >(list.size());
+    return *this;
+}
+
+template<class T>
+typename Vector<T>::iterator Vector<T>::erase(Vector::iterator first, Vector::iterator last) {
+    T* temp = new T[max];
+    size_t index{0};
+    for(auto it = begin(); it!=first ; ++it,index++){
+        temp[index]=*it;
+    }
+    size_t save = index+1;
+    for (auto it = last; it!=end()-1 ; ++it,index++) {
+        temp[index] = *it;
+    }
+    sz=last-first;
+    buffer = std::move(temp);
+    return buffer+save;
+}
+
 
 #endif //UNTITLED1_VECTOR_H
