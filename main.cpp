@@ -1,19 +1,20 @@
 #include <iostream>
 #include "Vector.h"
 #include <vector>
+#include <string>
 int main() {
-    Vector<char>a (10,'a');
+    Vector<std::string>a (10,"test");
 //    for (auto num : a) {
 //        std::cout<<num;
 //
 //    };
     std::cout<<a.capacity();
-    a.push_back('b');
-    a.push_back('b');
-    a.push_back('b');a.push_back('b');
+    a.push_back("btest");
+    a.push_back("b");
+
 
     for (auto num : a) { std::cout<<num; };
-    std::cout<<a.capacity();
+    std::cout<<std::endl<<a.capacity();
     std::cout<<std::endl;
     a.shrink_to_fit();
     for (auto num : a) { std::cout<<num; };

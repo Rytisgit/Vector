@@ -32,7 +32,7 @@ public:
     Vector(iterator first, iterator last);
     ~Vector();
     void assign(size_t size, const T& value);
-    void assign(size_t size, const T value);
+    void assign(size_t size, T value);
     void assign(iterator first, iterator last);
     void assign(std::initializer_list<T> list);
     size_t capacity() const;
@@ -53,8 +53,8 @@ public:
     T& operator[](size_t index);
     const T& operator[](size_t index) const { return buffer[index];};
     T& operator[](T& index) { return buffer[index];};
-    T* data() noexcept;
-    const T* data() const noexcept;
+    T* data() noexcept { return buffer;};
+    const T* data() const noexcept { return buffer;};
     T& at(size_t index) { if ( index >= sz) throw std::out_of_range("Out of range");
         return buffer[index];
     };
@@ -309,5 +309,54 @@ void Vector<T>::shrink_to_fit() {
         temp = nullptr;
     }
 }
+
+//template<class T>
+//Vector::iterator Vector<T>::insert(Vector::iterator pos, const T &value) {
+//    T *temp;
+//    sz = sz + 1;
+//    size_t i = 0;
+//    auto iterator=begin();
+//    for (; iterator == end()|| iterator== pos; iterator++) {
+//        i++;
+//    }
+//    if(iterator == end()) {throw std::out_of_range("Out of range"); }
+//    if (sz >= max) {
+//        temp = new T[sz];
+//        for (auto j = 0;  j<i ; ++j) {
+//            temp[j] = buffer[j];
+//        }
+//        temp[i] = value;
+//        for (auto j = i+1;  j<sz ; ++j) {
+//            temp[j] = buffer[j];
+//        }
+//        auto tempsz = sz;
+//        clear();
+//        buffer = new T[sz];
+//        buffer = std::move(temp);
+//        delete[] temp;
+//        temp = nullptr;
+//    }
+//    else{
+//        temp = new T[max];
+//        for (auto j = 0;  j<i ; ++j) {
+//            temp[j] = buffer[j];
+//        }
+//        temp[i] = value;
+//        for (auto j = i+1;  j<sz ; ++j) {
+//            temp[j] = buffer[j];
+//        }
+//        auto tempsz = sz;
+//        auto tempmax = max;
+//        clear();
+//        buffer = new T[sz];
+//        buffer = std::move(temp);
+//        delete[] temp;
+//        temp = nullptr;
+//    }
+//    for (auto iterator = begin(); iterator != pos; ++iterator) {
+//
+//    }
+//    return nullptr;
+//}
 
 #endif //UNTITLED1_VECTOR_H
