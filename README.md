@@ -18,7 +18,7 @@ This a Vector based on the capabilities of std::vector
 ![alt text](https://i.imgur.com/O6TdOno.png)
 
 ### Cool
-My vector is not very cool cause its pretty basic. However a not so fun fact about it is that it took quite a long time to get working right.
+My vector is not very cool cause its pretty basic. However a not so fun fact about it is that it took quite a long time to get working right - 3 days.
 
 ### Changelog v1.0
 #### Added
