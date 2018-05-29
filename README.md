@@ -17,7 +17,7 @@ This a Vector based on the capabilities of std::vector
 ### O3
 ![alt text](https://i.imgur.com/O6TdOno.png)
 
-###Cool
+### Cool
 My vector is not very cool cause its pretty basic
 
 ### Changelog v1.0
