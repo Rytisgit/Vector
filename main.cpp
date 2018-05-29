@@ -19,7 +19,7 @@ struct Timer{
 };
 void checka (Vector<int> &a){
     Timer t;
-    for(int i = 0;i<100000000;i++){
+    for(int i = 0;i<100;i++){
         a.push_back(20);
     }
     std::cout<<std::endl;
@@ -37,6 +37,7 @@ int main() {
     std::vector<int> b;
     checka(a);
     checkb(b);
+    a.shrink_to_fit();
     return 0;
 
 }
