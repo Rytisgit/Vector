@@ -82,16 +82,16 @@ public:
     iterator insert( const_iterator it, std::initializer_list<T> list );
 
     template <class Args>
-    iterator emplace(const_iterator pos, Args&& args);
+    iterator emplace(const_iterator it, Args&& args);
     iterator erase(iterator first, iterator last);
 
     template<class Args>
     void emplace_back(Args&& args);
-    void swap(Vector& other);
+    void swap(Vector& v);
     //
 
     Vector<T> &operator=(const Vector<T>& v);
-    Vector<T> &operator=(Vector<T>&& v);
+    Vector<T> &operator=(Vector<T>&& v) noexcept ;
     Vector<T> &operator=(std::initializer_list<T> list);
     void clear();
 
@@ -224,9 +224,10 @@ void Vector<T>::clear() {
 
     if(sz<2)delete buffer;
     else delete[] buffer;
+    T* newBuffer = new T[0];
     max = 0;
     sz = 0;
-    buffer = nullptr;
+    buffer = newBuffer;
 }
 
 template<class T>

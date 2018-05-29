@@ -17,16 +17,16 @@ struct Timer{
         std::cout<<(double)std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count()/1000000000<<" ";
     }
 };
-void checka (Vector<int> &a){
+void checka (Vector<int> &a, int sz){
     Timer t;
-    for(int i = 0;i<100;i++){
+    for(int i = 0;i<sz;i++){
         a.push_back(20);
     }
-    std::cout<<std::endl;
+   // std::cout<<std::endl;
 }
-void checkb (std::vector<int> &b){
+void checkb (std::vector<int> &b, int sz){
     Timer t;
-    for(int i = 0;i<100000000;i++){
+    for(int i = 0;i<sz;i++){
         b.push_back(20);
     }
    // std::cout<<b.capacity();
@@ -35,8 +35,18 @@ void checkb (std::vector<int> &b){
 int main() {
     Vector<int>a;
     std::vector<int> b;
-    checka(a);
-    checkb(b);
+    int sz = 10000;
+    for(int i =0;i<5;i++){
+        std::cout<<sz<<"   Custom:";
+        checka(a, sz);
+        a.clear();
+        std::cout<<"\tstd::vector:";
+        checkb(b,sz);
+        std::cout<<"\n";
+        b.clear();
+        sz*=10;
+    }
+
     a.shrink_to_fit();
     return 0;
 
